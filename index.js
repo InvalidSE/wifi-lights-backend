@@ -6,7 +6,9 @@ var wss = expressWs.getWss();
 app.post("/", (req, res) => {
   if(wss.clients.size > 0) {
 
-    colour = req.query.colour;
+    (r, g, b) = req.query.primary.split(",");
+    (r2, g2, b2) = req.query.secondary.split(",");
+
     mode = req.query.mode;
 
     if(colour == undefined || mode == undefined) {
@@ -18,12 +20,24 @@ app.post("/", (req, res) => {
         if (client.readyState === 1) {
           client.send(JSON.stringify(
             {
-              colour: colour,
+              primary: {
+                r: r,
+                g: g,
+                b: b
+              },
+              secondary: {
+                r: r2,
+                g: g2,
+                b: b2
+              },
               mode: mode
             }
           ));
         }
     });
+
+    res.send("Sent to " + wss.clients.size + " clients");
+
   } else {
     res.send("No clients connected");
   }

@@ -5,7 +5,7 @@ import asyncio
 print("Testing Websockets")
 
 async def ws_loop():
-    uri = "ws://invalidse-wifi-lights.host.qrl.nz/"
+    uri = "ws://invalidse-wifi-lights.host.qrl.nz"
     async with websockets.connect(uri) as websocket:
         print("Connected to server")
         await websocket.send(uuid.uuid4().hex)
