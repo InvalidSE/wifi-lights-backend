@@ -6,8 +6,8 @@ var wss = expressWs.getWss();
 app.post("/", (req, res) => {
   if(wss.clients.size > 0) {
 
-    (r, g, b) = req.query.primary.split(",");
-    (r2, g2, b2) = req.query.secondary.split(",");
+    (r, g, b) = req.query.primary.split(" ");
+    (r2, g2, b2) = req.query.secondary.split(" ");
 
     mode = req.query.mode;
 
