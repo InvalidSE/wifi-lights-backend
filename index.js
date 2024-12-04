@@ -3,15 +3,54 @@ var app = express();
 var expressWs = require("express-ws")(app);
 var wss = expressWs.getWss();
 
-app.post("/", (req, res) => {
+primary = [0, 0, 0];
+secondary = [0, 0, 0];
+mode = 0;
+brightness = 0;
+
+app.post("/set", (req, res) => {
   if(wss.clients.size > 0) {
 
-    primary = req.query.primary.split(" ");
-    secondary = req.query.secondary.split(" ");
+    // handle mode, primary, secondary, brightness
+    if (req.query.primary) {
+      primary = req.query.primary.split(" ").map(function (x) { return parseInt(x); });
+    }
+    if (req.query.secondary) {
+      secondary = req.query.secondary.split(" ").map(function (x) { return parseInt(x); });
+    }
+    if (req.query.mode) {
+      mode = req.query.mode;
+    }
+    if (req.query.brightness) {
+      brightness = parseInt(req.query.brightness);
+    }
 
-    mode = req.query.mode;
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === 1) {
+          client.send(JSON.stringify(
+            {
+              primary: primary,
+              secondary: secondary,
+              mode: mode,
+              brightness: brightness
+            }
+          ));
+        }
+    });
 
-    if(primary == undefined || mode == undefined || secondary == undefined) {
+    res.send("Sent to " + wss.clients.size + " clients");
+
+  } else {
+    res.send("No clients connected");
+  }
+});
+
+app.post("/brightness", (req, res) => {
+  if(wss.clients.size > 0) {
+
+    brightness = req.query.brightness;
+
+    if(brightness == undefined) {
       res.send("Invalid request");
       return;
     }
@@ -20,17 +59,7 @@ app.post("/", (req, res) => {
         if (client.readyState === 1) {
           client.send(JSON.stringify(
             {
-              primary: {
-                r: parseInt(primary[0]),
-                g: parseInt(primary[1]),
-                b: parseInt(primary[2])
-              },
-              secondary: {
-                r: parseInt(secondary[0]),
-                g: parseInt(secondary[1]),
-                b: parseInt(secondary[2])
-              },
-              mode: mode
+              brightness: parseInt(brightness)
             }
           ));
         }
@@ -54,6 +83,16 @@ app.get("/connected", (req, res) => {
 app.ws("/", function (ws, req) {
   ws.on("message", function (msg) {
     console.log("Received: ", msg);
+    // update clients with current state
+    ws.send(
+      JSON.stringify(
+      {
+        primary: primary,
+        secondary: secondary,
+        mode: mode,
+        brightness: brightness
+      }
+    ));
   });
 });
 
