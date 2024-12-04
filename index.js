@@ -6,8 +6,8 @@ var wss = expressWs.getWss();
 app.post("/", (req, res) => {
   if(wss.clients.size > 0) {
 
-    (r, g, b) = req.query.primary.split(" ");
-    (r2, g2, b2) = req.query.secondary.split(" ");
+    primary = req.query.primary.split(" ");
+    secondary = req.query.secondary.split(" ");
 
     mode = req.query.mode;
 
@@ -21,14 +21,14 @@ app.post("/", (req, res) => {
           client.send(JSON.stringify(
             {
               primary: {
-                r: r,
-                g: g,
-                b: b
+                r: primary[0],
+                g: primary[1],
+                b: primary[2]
               },
               secondary: {
-                r: r2,
-                g: g2,
-                b: b2
+                r: secondary[0],
+                g: secondary[1],
+                b: secondary[2]
               },
               mode: mode
             }
