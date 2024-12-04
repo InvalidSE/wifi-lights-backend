@@ -21,14 +21,14 @@ app.post("/", (req, res) => {
           client.send(JSON.stringify(
             {
               primary: {
-                r: primary[0],
-                g: primary[1],
-                b: primary[2]
+                r: parseInt(primary[0]),
+                g: parseInt(primary[1]),
+                b: parseInt(primary[2])
               },
               secondary: {
-                r: secondary[0],
-                g: secondary[1],
-                b: secondary[2]
+                r: parseInt(secondary[0]),
+                g: parseInt(secondary[1]),
+                b: parseInt(secondary[2])
               },
               mode: mode
             }
