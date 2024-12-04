@@ -24,6 +24,9 @@ app.post("/", (req, res) => {
           ));
         }
     });
+
+    res.send("Sent to " + wss.clients.size + " clients");
+
   } else {
     res.send("No clients connected");
   }
