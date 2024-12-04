@@ -11,7 +11,7 @@ app.post("/", (req, res) => {
 
     mode = req.query.mode;
 
-    if(colour == undefined || mode == undefined) {
+    if(primary == undefined || mode == undefined || secondary == undefined) {
       res.send("Invalid request");
       return;
     }
