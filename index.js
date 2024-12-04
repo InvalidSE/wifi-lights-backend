@@ -7,6 +7,7 @@ primary = [0, 0, 0];
 secondary = [0, 0, 0];
 mode = 0;
 brightness = 0;
+speed = 1000;
 
 app.post("/set", (req, res) => {
   if(wss.clients.size > 0) {
@@ -19,10 +20,13 @@ app.post("/set", (req, res) => {
       secondary = req.query.secondary.split(" ").map(function (x) { return parseInt(x); });
     }
     if (req.query.mode) {
-      mode = req.query.mode;
+      mode = parseInt(req.query.mode);
     }
     if (req.query.brightness) {
       brightness = parseInt(req.query.brightness);
+    }
+    if (req.query.speed) {
+      speed = parseInt(req.query.speed);
     }
 
     wss.clients.forEach(function each(client) {
@@ -32,13 +36,14 @@ app.post("/set", (req, res) => {
               primary: primary,
               secondary: secondary,
               mode: mode,
-              brightness: brightness
+              brightness: brightness,
+              speed: speed
             }
           ));
         }
     });
 
-    res.send("Sent to " + wss.clients.size + " clients");
+    res.send(JSON.stringify({primary: primary, secondary: secondary, mode: mode, brightness: brightness, speed: speed}));
 
   } else {
     res.send("No clients connected");
